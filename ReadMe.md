@@ -120,3 +120,7 @@ To run this project, execute below commands.
     pulumi up
     ```
   * Pulumi will do dry run and show you output, how does your infra looks like. If you are fine with changes, Select 'Yes' and infra will be created.
+
+  # Architectural Diagram 
+
+  ![alt text](https://github.com/sssanjaya/pulumi-aws/blob/main/aws.png?raw=true)
