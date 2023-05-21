@@ -8,12 +8,18 @@ const containerPort = config.getNumber("containerPort") || 80;
 const cpu = config.getNumber("cpu") || 512;
 const memory = config.getNumber("memory") || 128;
 
+//A common tags to reuse 
 const commonTags = {
     "Environment": `${getStack()}`,
     "Managed by Pulumi": "yes",
     "pulumi:Project": pulumi.getProject(),
     "pulumi:Stack": pulumi.getStack(),
 }
+
+// set up VPC
+const vpc = new awsx.ec2.Vpc("vpc",{
+    numberOfAvailabilityZones: 3,
+})
 
 // An ECS cluster to deploy into
 const cluster = new aws.ecs.Cluster("cluster", {
@@ -51,13 +57,13 @@ const api = new awsx.ecr.Image("api", {
 // Deploy an ECS Service on Fargate to host the application container
 const webservice = new awsx.ecs.FargateService("web", {
     cluster: cluster.arn,
-    assignPublicIp: true,
     taskDefinitionArgs: {
         container: {
             image: web.imageUri,
             cpu: cpu,
             memory: memory,
             essential: true,
+            dependsOn: [],
             portMappings: [{
                 containerPort: containerPort,
                 targetGroup: loadbalancer.defaultTargetGroup,
@@ -70,16 +76,15 @@ const webservice = new awsx.ecs.FargateService("web", {
 
 const apiservice = new awsx.ecs.FargateService("api", {
     cluster: cluster.arn,
-    assignPublicIp: true,
+    assignPublicIp: false,
     taskDefinitionArgs: {
         container: {
-            image: web.imageUri,
+            image: api.imageUri,
             cpu: cpu,
             memory: memory,
             essential: true,
             portMappings: [{
                 containerPort: containerPort,
-                // targetGroup: loadbalancer.defaultTargetGroup,
             }],
         },
     },
