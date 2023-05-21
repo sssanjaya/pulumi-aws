@@ -1,4 +1,4 @@
-name: Pulumi Qa Push
+name: Push to Production
 on:
   push:
     branches:

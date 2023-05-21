@@ -1,4 +1,4 @@
-name: Pulumi Pull Request
+name: Pull Request Preview
 
 on:
   - pull_request
