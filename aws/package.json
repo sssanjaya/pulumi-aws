@@ -1,5 +1,5 @@
 {
-    "name": "pulumiTS",
+    "name": "pulumi-dev",
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^16"

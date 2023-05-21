@@ -16,10 +16,10 @@ const loadbalancer = new awsx.lb.ApplicationLoadBalancer("loadbalancer", {});
 // An ECR repository to store our application's container image
 const repo = new awsx.ecr.Repository("repo", {});
 
-// Build and publish our application's container image from directory to the ECR repository
+// Build and publish our application's container image from ./app to the ECR repository
 const image = new awsx.ecr.Image("image", {
     repositoryUrl: repo.url,
-    path: "../../infra-web",
+    path: "./app",
 });
 
 // Deploy an ECS Service on Fargate to host the application container
