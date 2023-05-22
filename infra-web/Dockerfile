@@ -11,6 +11,7 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /src
+RUN ls
 COPY ["infra-web/infra-web.csproj", "infra-web/"]
 RUN dotnet restore "infra-web/infra-web.csproj"
 COPY . .
