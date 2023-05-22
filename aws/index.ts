@@ -13,7 +13,7 @@ const commonTags = {
 
 // set up VPC
 const vpc = new awsx.ec2.Vpc("vpc",{
-    numberOfAvailabilityZones: 3,
+    numberOfAvailabilityZones: 2,
     natGateways: {
         strategy: awsx.ec2.NatGatewayStrategy.Single,
     }
