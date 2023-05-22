@@ -3,11 +3,6 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 import { getStack } from "@pulumi/pulumi";
 
-// const config = new pulumi.Config();
-// const containerPort = config.getNumber("containerPort") || 80;
-// const cpu = config.getNumber("cpu") || 512;
-// const memory = config.getNumber("memory") || 128;
-
 //A common tags to reuse 
 const commonTags = {
     "Environment": `${getStack()}`,
@@ -112,26 +107,7 @@ const api = new awsx.ecr.Image("api", {
     path: "../infra-api",
 });
 
-// Deploy an ECS Service on Fargate to host the application container
-// const webService = new awsx.ecs.FargateService("web", {
-//     cluster: cluster.arn,
-//     taskDefinitionArgs: {
-//         container: {
-//             image: web.imageUri,
-//             cpu: cpu,
-//             memory: memory,
-//             essential: true,
-//             dependsOn: [],
-//             portMappings: [{
-//                 containerPort: containerPort,
-//                 targetGroup: loadbalancer.defaultTargetGroup,
-//             }],
-//         },
-//     },
-//     desiredCount: 3,
-//     tags: commonTags,
-// });
-
+// Define task definiton for web frontend
 const webTaskDefinition = new aws.ecs.TaskDefinition("web-task", {
     family: "fargate-task-definition",
     cpu: "256",
@@ -151,6 +127,7 @@ const webTaskDefinition = new aws.ecs.TaskDefinition("web-task", {
     tags: commonTags,
   });
 
+// creating service for web frontend
 const webService = new aws.ecs.Service("web-svc", {
   cluster: cluster.arn,
   desiredCount: 3,
@@ -202,24 +179,6 @@ const apiService = new aws.ecs.Service("api-svc", {
     containerPort: 80,
   }],
 });
-
-// const apiService = new awsx.ecs.FargateService("api", {
-//     cluster: cluster.arn,
-//     assignPublicIp: false,
-//     taskDefinitionArgs: {
-//         container: {
-//             image: api.imageUri,
-//             cpu: cpu,
-//             memory: memory,
-//             essential: true,
-//             portMappings: [{
-//                 containerPort: containerPort,
-//             }],
-//         },
-//     },
-//     desiredCount: 3,
-//     tags: commonTags,
-// });
 
 // The URL at which the container's HTTP endpoint will be available
 export const url = pulumi.interpolate`http://${loadbalancer.dnsName}`;
